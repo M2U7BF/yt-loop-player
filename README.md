@@ -1,5 +1,9 @@
 # youtube動画を自動リピートするツール
 
+## 今すぐ使う
+下記URLをクリック。<br>
+https://m2u7bf.github.io/yt_auto_web/index.html
+
 ## 使い方
 １）webページのホスティング
 ```
