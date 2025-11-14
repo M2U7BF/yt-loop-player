@@ -92,6 +92,11 @@ button.btn_10:hover {
   top: 100%;
   z-index: 1000;
 }
+@media(max-width:750px) {
+  #historyList {
+    font-size: 14px;
+  }
+}
 
 #historyList li {
   padding: 8px;
