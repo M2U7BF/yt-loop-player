@@ -1,0 +1,79 @@
+// YouTube APIスクリプトの読み込み
+var tag = document.createElement('script');
+tag.src = "https://www.youtube.com/iframe_api";
+var firstScriptTag = document.getElementsByTagName('script')[0];
+firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+var player; // playerオブジェクトをグローバルで保持
+
+window.addEventListener('load', function () {
+  var urlParams = new URLSearchParams(window.location.search);
+  var urlFromParam = urlParams.get('url'); // 'url'パラメータの値を取得
+  var urlInput = document.getElementById('youtubeUrl');
+
+  if (urlFromParam) {
+    // デコードして入力欄にセット
+    urlInput.value = decodeURIComponent(urlFromParam);
+  }
+});
+// ----------------------------------------------------
+
+// 2. API準備完了時にプレーヤーを初期化
+function onYouTubeIframeAPIReady() {
+  player = new YT.Player('player', {
+    height: '100%',
+    width: '100%',
+    playerVars: {
+      'controls': 1,
+      'rel': 0,
+      'showinfo': 0,
+      'iv_load_policy': 3,
+      'playsinline': 1
+    },
+    events: {
+      'onStateChange': onPlayerStateChange
+    }
+  });
+}
+
+// 3. 動画の状態変化を監視（リピート再生のため）
+function onPlayerStateChange(event) {
+  // 0 = YT.PlayerState.ENDED (再生終了)
+  if (event.data == YT.PlayerState.ENDED || event.data == YT.PlayerState.PAUSED) {
+    player.playVideo(); // 再び再生（ループ）
+  }
+}
+
+// 4. 再生開始ボタンのクリックイベント
+document.getElementById('playButton').addEventListener('click', function () {
+  var url = document.getElementById('youtubeUrl').value;
+  var videoId = extractVideoId(url);
+
+  if (videoId) {
+    player.loadVideoById(videoId);
+    player.unMute();
+  } else {
+    alert("有効なYouTubeのURLを入力してください。");
+  }
+});
+document.getElementById('stopButton').addEventListener('click', function () {
+  if (player) {
+    player.stopVideo();
+  }
+});
+document.getElementById('youtubeUrl').addEventListener('keydown', function (event) {
+  if (event.key === 'Enter') {
+    document.getElementById('playButton').click();
+  }
+});
+
+// 5. URLからYouTube動画IDを抽出する関数
+function extractVideoId(url) {
+  var regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+  var match = url.match(regExp);
+  if (match && match[2].length == 11) {
+    return match[2];
+  } else {
+    return null;
+  }
+}
