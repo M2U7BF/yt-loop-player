@@ -111,5 +111,5 @@ button.btn_10:hover {
 }
 
 .hidden {
-  display: none;
+  display: none!important;
 }

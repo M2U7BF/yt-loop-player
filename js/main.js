@@ -44,6 +44,19 @@ function onPlayerStateChange(event) {
   }
 }
 
+// ボタンの表示切り替え
+function updateButtonDisplay(isPlaying) {
+  var playButton = document.getElementById('playButton');
+  var stopButton = document.getElementById('stopButton');
+  if (isPlaying) {
+    playButton.classList.add("hidden");
+    stopButton.classList.remove("hidden");
+  } else {
+    playButton.classList.remove("hidden");
+    stopButton.classList.add("hidden");
+  }
+}
+
 // 4. 再生開始ボタンのクリックイベント
 document.getElementById('playButton').addEventListener('click', function () {
   var url = document.getElementById('youtubeUrl').value;
@@ -52,6 +65,7 @@ document.getElementById('playButton').addEventListener('click', function () {
   if (videoId) {
     player.loadVideoById(videoId);
     player.unMute();
+    updateButtonDisplay(true);
   } else {
     alert("有効なYouTubeのURLを入力してください。");
   }
@@ -60,6 +74,7 @@ document.getElementById('stopButton').addEventListener('click', function () {
   if (player) {
     player.stopVideo();
   }
+  updateButtonDisplay(false);
 });
 document.getElementById('youtubeUrl').addEventListener('keydown', function (event) {
   if (event.key === 'Enter') {
