@@ -61,6 +61,8 @@ function renderHistory() {
     li.addEventListener("click", () => {
       input.value = item.url;   // URLをinputにセット
       historyList.classList.add("hidden");
+      // 再生開始
+      document.getElementById('playButton').click();
     });
 
     historyList.appendChild(li);

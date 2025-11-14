@@ -14,6 +14,7 @@ window.addEventListener('load', function () {
   if (urlFromParam) {
     // デコードして入力欄にセット
     urlInput.value = decodeURIComponent(urlFromParam);
+    document.getElementById('playButton').click();
   }
 });
 // ----------------------------------------------------
