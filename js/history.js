@@ -28,6 +28,8 @@ async function fetchYoutubeTitle(url) {
 
 // 入力を履歴に追加（重複排除・新しいものを先頭へ）
 async function addHistory(url) {
+  if (!url || !extractVideoId(url)) return;
+
   let history = loadHistory();
 
   // 既存項目削除（URL一致で重複扱い）
