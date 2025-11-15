@@ -34,7 +34,12 @@ async function addHistory(url) {
   history = history.filter(item => item.url !== url);
 
   // タイトル取得
-  const title = await fetchYoutubeTitle(url) || "（タイトル取得失敗）";
+  const title = await fetchYoutubeTitle(url);
+  
+  // タイトル取得に失敗した場合は履歴に追加しない
+  if (!title) {
+    return;
+  }
 
   // 新しい履歴を追加（最新を先頭）
   history.unshift({ url, title });
