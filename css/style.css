@@ -104,6 +104,7 @@ button.btn_10:hover {
 @media(max-width:750px) {
   #historyList {
     font-size: 14px;
+    max-height: 180px;
   }
 }
 
