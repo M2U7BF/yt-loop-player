@@ -5,6 +5,7 @@ var firstScriptTag = document.getElementsByTagName('script')[0];
 firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
 var player; // playerオブジェクトをグローバルで保持
+var enable_pause = false;
 
 function inputUrlFromQuery() {
   var urlParams = new URLSearchParams(window.location.search);
@@ -56,7 +57,7 @@ function onPlayerStateChange(event) {
   else if (event.data == YT.PlayerState.PLAYING) {
     updateButtonDisplay(true);
   }
-  else if (event.data == YT.PlayerState.ENDED || event.data == YT.PlayerState.PAUSED) {
+  else if (event.data == YT.PlayerState.ENDED || (!enable_pause && event.data == YT.PlayerState.PAUSED)) {
     player.playVideo(); // 再び再生（ループ）
   }
   hiddenHistory();
@@ -66,12 +67,15 @@ function onPlayerStateChange(event) {
 function updateButtonDisplay(isPlaying) {
   var playButton = document.getElementById('playButton');
   var stopButton = document.getElementById('stopButton');
+  var pauseButton = document.getElementById('pauseButton');
   if (isPlaying) {
     playButton.classList.add("hidden");
     stopButton.classList.remove("hidden");
+    pauseButton.classList.remove("hidden");
   } else {
     playButton.classList.remove("hidden");
     stopButton.classList.add("hidden");
+    pauseButton.classList.add("hidden");
   }
 }
 
@@ -80,7 +84,11 @@ document.getElementById('playButton').addEventListener('click', function () {
   var url = document.getElementById('youtubeUrl').value;
   var videoId = extractVideoId(url);
 
-  if (videoId) {
+  if (player && player.getPlayerState() == YT.PlayerState.PAUSED)
+  {
+    player.playVideo();
+  }
+  else if (videoId) {
     player.loadVideoById(videoId);
     player.unMute();
   } else {
@@ -90,6 +98,13 @@ document.getElementById('playButton').addEventListener('click', function () {
 document.getElementById('stopButton').addEventListener('click', function () {
   if (player) {
     player.stopVideo();
+  }
+  updateButtonDisplay(false);
+});
+document.getElementById('pauseButton').addEventListener('click', function () {
+  if (player) {
+    enable_pause = true;
+    player.pauseVideo();
   }
   updateButtonDisplay(false);
 });
