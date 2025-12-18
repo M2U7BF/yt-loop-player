@@ -5,7 +5,7 @@ var firstScriptTag = document.getElementsByTagName('script')[0];
 firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
 var player; // playerオブジェクトをグローバルで保持
-var enable_pause = false;
+var enablePause = false;
 
 function inputUrlFromQuery() {
   var urlParams = new URLSearchParams(window.location.search);
@@ -21,6 +21,13 @@ function inputUrlFromQuery() {
     return true;
   }
   return false;
+}
+
+function manageEnablePauseFromQuery() {
+  var urlParams = new URLSearchParams(window.location.search);
+  var urlFromParam = urlParams.get('pause');
+
+  enablePause = urlFromParam === 'true' ? true : false;
 }
 
 // 2. API準備完了時にプレーヤーを初期化
@@ -46,6 +53,7 @@ function onPlayerReady(event) {
   if (inputUrlFromQuery()) {
     document.getElementById('playButton').click();
   }
+  manageEnablePauseFromQuery();
 }
 
 // 3. 動画の状態変化を監視（リピート再生のため）
@@ -57,7 +65,7 @@ function onPlayerStateChange(event) {
   else if (event.data == YT.PlayerState.PLAYING) {
     updateButtonDisplay(true);
   }
-  else if (event.data == YT.PlayerState.ENDED || (!enable_pause && event.data == YT.PlayerState.PAUSED)) {
+  else if (event.data == YT.PlayerState.ENDED || (!enablePause && event.data == YT.PlayerState.PAUSED)) {
     player.playVideo(); // 再び再生（ループ）
   }
   hiddenHistory();
@@ -103,7 +111,7 @@ document.getElementById('stopButton').addEventListener('click', function () {
 });
 document.getElementById('pauseButton').addEventListener('click', function () {
   if (player) {
-    enable_pause = true;
+    enablePause = true;
     player.pauseVideo();
   }
   updateButtonDisplay(false);
