@@ -79,11 +79,11 @@ function updateButtonDisplay(isPlaying) {
   if (isPlaying) {
     playButton.classList.add("hidden");
     stopButton.classList.remove("hidden");
-    pauseButton.classList.remove("hidden");
+    if (enablePause) pauseButton.classList.remove("hidden");
   } else {
     playButton.classList.remove("hidden");
     stopButton.classList.add("hidden");
-    pauseButton.classList.add("hidden");
+    if (enablePause) pauseButton.classList.add("hidden");
   }
 }
 
@@ -111,7 +111,7 @@ document.getElementById('stopButton').addEventListener('click', function () {
 });
 document.getElementById('pauseButton').addEventListener('click', function () {
   if (player) {
-    enablePause = true;
+    // enablePause = true;
     player.pauseVideo();
   }
   updateButtonDisplay(false);
