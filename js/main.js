@@ -4,19 +4,18 @@ tag.src = "https://www.youtube.com/iframe_api";
 var firstScriptTag = document.getElementsByTagName('script')[0];
 firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
-var player; // playerオブジェクトをグローバルで保持
+var player;
 var enablePause = false;
+var isPlaylist = false; // プレイリストかどうかのフラグ
 
 function inputUrlFromQuery() {
   var urlParams = new URLSearchParams(window.location.search);
-  var urlFromParam = urlParams.get('url'); // 'url'パラメータの値を取得
+  var urlFromParam = urlParams.get('url');
   var urlInput = document.getElementById('youtubeUrl');
-
   if (urlInput.value) {
     return false;
   }
   if (urlFromParam) {
-    // デコードして入力欄にセット
     urlInput.value = decodeURIComponent(urlFromParam);
     return true;
   }
@@ -26,11 +25,9 @@ function inputUrlFromQuery() {
 function manageEnablePauseFromQuery() {
   var urlParams = new URLSearchParams(window.location.search);
   var urlFromParam = urlParams.get('pause');
-
   enablePause = urlFromParam === 'true' ? true : false;
 }
 
-// 2. API準備完了時にプレーヤーを初期化
 function onYouTubeIframeAPIReady() {
   player = new YT.Player('player', {
     height: '100%',
@@ -56,7 +53,6 @@ function onPlayerReady(event) {
   manageEnablePauseFromQuery();
 }
 
-// 3. 動画の状態変化を監視（リピート再生のため）
 function onPlayerStateChange(event) {
   if (event.data == -1) {
     var url = document.getElementById('youtubeUrl').value;
@@ -65,13 +61,30 @@ function onPlayerStateChange(event) {
   else if (event.data == YT.PlayerState.PLAYING) {
     updateButtonDisplay(true);
   }
-  else if (event.data == YT.PlayerState.ENDED || (!enablePause && event.data == YT.PlayerState.PAUSED)) {
-    player.playVideo(); // 再び再生（ループ）
+  else if (event.data == YT.PlayerState.ENDED) {
+    if (isPlaylist) {
+      // プレイリストの場合
+      var currentIndex = player.getPlaylistIndex();
+      var playlist = player.getPlaylist();
+      
+      if (playlist && currentIndex >= playlist.length - 1) {
+        // 最後の動画に到達 → 最初から再生
+        player.playVideoAt(0);
+      } else {
+        // 次の動画へ
+        player.nextVideo();
+      }
+    } else {
+      // 単一動画の場合は従来通りループ
+      player.playVideo();
+    }
+  }
+  else if (!enablePause && event.data == YT.PlayerState.PAUSED) {
+    player.playVideo();
   }
   hiddenHistory();
 }
 
-// ボタンの表示切り替え
 function updateButtonDisplay(isPlaying) {
   var playButton = document.getElementById('playButton');
   var stopButton = document.getElementById('stopButton');
@@ -87,42 +100,55 @@ function updateButtonDisplay(isPlaying) {
   }
 }
 
-// 4. 再生開始ボタンのクリックイベント
 document.getElementById('playButton').addEventListener('click', function () {
   var url = document.getElementById('youtubeUrl').value;
-  var videoId = extractVideoId(url);
-
-  if (player && player.getPlayerState() == YT.PlayerState.PAUSED)
-  {
+  
+  if (player && player.getPlayerState() == YT.PlayerState.PAUSED) {
     player.playVideo();
+    return;
   }
-  else if (videoId) {
+  
+  var playlistId = extractPlaylistId(url);
+  var videoId = extractVideoId(url);
+  
+  if (playlistId) {
+    // プレイリストURLの場合
+    isPlaylist = true;
+    player.loadPlaylist({
+      list: playlistId,
+      listType: 'playlist'
+    });
+    player.unMute();
+  } else if (videoId) {
+    // 単一動画の場合
+    isPlaylist = false;
     player.loadVideoById(videoId);
     player.unMute();
   } else {
     alert("有効なYouTubeのURLを入力してください。");
   }
 });
+
 document.getElementById('stopButton').addEventListener('click', function () {
   if (player) {
     player.stopVideo();
   }
   updateButtonDisplay(false);
 });
+
 document.getElementById('pauseButton').addEventListener('click', function () {
   if (player) {
-    // enablePause = true;
     player.pauseVideo();
   }
   updateButtonDisplay(false);
 });
+
 document.getElementById('youtubeUrl').addEventListener('keydown', function (event) {
   if (event.key === 'Enter') {
     document.getElementById('playButton').click();
   }
 });
 
-// 5. URLからYouTube動画IDを抽出する関数
 function extractVideoId(url) {
   var regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
   var match = url.match(regExp);
@@ -131,4 +157,11 @@ function extractVideoId(url) {
   } else {
     return null;
   }
+}
+
+// プレイリストIDを抽出する関数
+function extractPlaylistId(url) {
+  var regExp = /[?&]list=([^#\&\?]+)/;
+  var match = url.match(regExp);
+  return match ? match[1] : null;
 }
