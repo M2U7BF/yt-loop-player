@@ -4,12 +4,10 @@ const historyList = document.getElementById("historyList");
 const STORAGE_KEY = "ytHistory";
 const MAX_HISTORY = 20;
 
-// 履歴を取得
 function loadHistory() {
   return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
 }
 
-// 履歴を保存
 function saveHistory(history) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
 }
@@ -18,7 +16,7 @@ async function fetchYoutubeTitle(url) {
   try {
     const api = `https://www.youtube.com/oembed?url=${encodeURIComponent(url)}&format=json`;
     const res = await fetch(api);
-    if (!res.ok) return null; // URL不正など
+    if (!res.ok) return null;
     const data = await res.json();
     return data.title;
   } catch {
@@ -26,28 +24,53 @@ async function fetchYoutubeTitle(url) {
   }
 }
 
-// 入力を履歴に追加（重複排除・新しいものを先頭へ）
+// プレイリストの最初の動画URLを取得
+function getFirstVideoUrlFromPlaylist(url) {
+  const playlistId = extractPlaylistId(url);
+  if (!playlistId) return null;
+  
+  // プレイリストURLに含まれる動画ID（v=パラメータ）を取得
+  const videoId = extractVideoId(url);
+  if (videoId) {
+    return `https://www.youtube.com/watch?v=${videoId}`;
+  }
+  
+  return null;
+}
+
 async function addHistory(url) {
-  if (!url || !extractVideoId(url)) return;
+  if (!url) return;
+  
+  const playlistId = extractPlaylistId(url);
+  const videoId = extractVideoId(url);
+  
+  if (!playlistId && !videoId) return;
 
   let history = loadHistory();
-
-  // 既存項目削除（URL一致で重複扱い）
   history = history.filter(item => item.url !== url);
 
-  // タイトル取得
-  const title = await fetchYoutubeTitle(url) || "（タイトル取得失敗）";
+  let title;
+  
+  if (playlistId) {
+    // プレイリストの場合
+    const firstVideoUrl = getFirstVideoUrlFromPlaylist(url);
+    if (firstVideoUrl) {
+      const videoTitle = await fetchYoutubeTitle(firstVideoUrl);
+      title = videoTitle ? `[プレイリスト] ${videoTitle}` : "[プレイリスト] （タイトル取得失敗）";
+    } else {
+      title = `[プレイリスト] (ID: ${playlistId.substring(0, 10)}...)`;
+    }
+  } else {
+    // 単一動画の場合
+    title = await fetchYoutubeTitle(url) || "（タイトル取得失敗）";
+  }
 
-  // 新しい履歴を追加（最新を先頭）
   history.unshift({ url, title });
-
-  // 5件まで
   history = history.slice(0, MAX_HISTORY);
 
   saveHistory(history);
 }
 
-// 履歴を描画
 function renderHistory() {
   const history = loadHistory();
   if (history.length === 0) {
@@ -58,12 +81,11 @@ function renderHistory() {
   historyList.innerHTML = "";
   history.forEach(item => {
     const li = document.createElement("li");
-    li.textContent = item.title;  // タイトル表示
+    li.textContent = item.title;
 
     li.addEventListener("click", () => {
-      input.value = item.url;   // URLをinputにセット
+      input.value = item.url;
       historyList.classList.add("hidden");
-      // 再生開始
       document.getElementById('playButton').click();
     });
 
@@ -73,7 +95,6 @@ function renderHistory() {
   historyList.classList.remove("hidden");
 }
 
-// 入力確定時（Enter または blur）に履歴追加
 input.addEventListener("change", () => {
   const urlText = input.value.trim();
   if (urlText) {
@@ -81,7 +102,6 @@ input.addEventListener("change", () => {
   }
 });
 
-// focus 時に履歴を表示
 input.addEventListener("focus", () => {
   renderHistory();
 });
@@ -90,7 +110,6 @@ function hiddenHistory() {
   historyList.classList.add("hidden");
 }
 
-// input 以外をクリックしたら履歴を閉じる
 document.addEventListener("click", (e) => {
   if (!input.contains(e.target) && !historyList.contains(e.target)) {
     historyList.classList.add("hidden");
