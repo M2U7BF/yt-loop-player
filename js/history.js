@@ -2,7 +2,7 @@ const input = document.getElementById("youtubeUrl");
 const historyList = document.getElementById("historyList");
 
 const STORAGE_KEY = "ytHistory";
-const MAX_HISTORY = 20;
+const MAX_HISTORY = 60;
 
 function loadHistory() {
   return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
