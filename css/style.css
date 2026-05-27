@@ -79,18 +79,24 @@ button.btn_10:hover {
 }
 
 /* 履歴リスト */
-#historyList {
-  color: white;
+#historyPanel {
   border: 1px solid #303030;
   border-radius: 6px;
   width: 100%;
-  padding: 0;
   margin-top: 4px;
-  list-style: none;
   background: #212121;
   position: absolute;
   top: 100%;
   z-index: 1000;
+  overflow: hidden;
+}
+#historyList {
+  color: white;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  background: #212121;
   max-height: 200px;
   overflow-y: scroll;
 }
@@ -145,6 +151,43 @@ button.btn_10:hover {
 #historyList li.removing {
   transition: height 0.2s ease, opacity 0.2s ease;
   opacity: 0;
+}
+
+#historyList li.history-empty {
+  background: #212121;
+  color: #888;
+  padding: 8px;
+  text-align: center;
+}
+
+#historyTabs {
+  display: flex;
+  gap: 4px;
+  padding: 6px;
+  border-top: 1px solid #303030;
+  background: #1a1a1a;
+}
+#historyTabs .history-tab {
+  flex: 1;
+  padding: 7px 0;
+  background: transparent;
+  border: none;
+  border-radius: 999px;
+  color: #aaa;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+#historyTabs .history-tab:hover {
+  color: #fff;
+  background: #303030;
+}
+#historyTabs .history-tab.active {
+  color: #fff;
+  background: #4d4d4d;
 }
 
 .hidden {

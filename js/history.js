@@ -1,5 +1,12 @@
 const input = document.getElementById("youtubeUrl");
 const historyList = document.getElementById("historyList");
+const historyPanel = document.getElementById("historyPanel");
+
+let currentTab = "solo";
+
+function isPlaylistItem(item) {
+  return !!extractPlaylistId(item.url);
+}
 
 const STORAGE_KEY = "ytHistory";
 const MAX_HISTORY = 60;
@@ -56,9 +63,9 @@ async function addHistory(url) {
     const firstVideoUrl = getFirstVideoUrlFromPlaylist(url);
     if (firstVideoUrl) {
       const videoTitle = await fetchYoutubeTitle(firstVideoUrl);
-      title = videoTitle ? `[プレイリスト] ${videoTitle}` : "[プレイリスト] （タイトル取得失敗）";
+      title = videoTitle ? `[list] ${videoTitle}` : "[list] （タイトル取得失敗）";
     } else {
-      title = `[プレイリスト] (ID: ${playlistId.substring(0, 10)}...)`;
+      title = `[list] (ID: ${playlistId.substring(0, 10)}...)`;
     }
   } else {
     // 単一動画の場合
@@ -169,7 +176,7 @@ function attachSwipeToDelete(li, content, item) {
       return;
     }
     input.value = item.url;
-    historyList.classList.add("hidden");
+    historyPanel.classList.add("hidden");
     document.getElementById('playButton').click();
   });
 }
@@ -177,12 +184,24 @@ function attachSwipeToDelete(li, content, item) {
 function renderHistory() {
   const history = loadHistory();
   if (history.length === 0) {
-    historyList.classList.add("hidden");
+    historyPanel.classList.add("hidden");
     return;
   }
 
+  const filtered = history.filter(item =>
+    currentTab === "list" ? isPlaylistItem(item) : !isPlaylistItem(item)
+  );
+
   historyList.innerHTML = "";
-  history.forEach(item => {
+
+  if (filtered.length === 0) {
+    const empty = document.createElement("li");
+    empty.className = "history-empty";
+    empty.textContent = "履歴がありません";
+    historyList.appendChild(empty);
+  }
+
+  filtered.forEach(item => {
     const li = document.createElement("li");
 
     const bg = document.createElement("div");
@@ -200,8 +219,19 @@ function renderHistory() {
     historyList.appendChild(li);
   });
 
-  historyList.classList.remove("hidden");
+  historyPanel.classList.remove("hidden");
 }
+
+document.querySelectorAll(".history-tab").forEach(tab => {
+  tab.addEventListener("click", (e) => {
+    e.stopPropagation();
+    currentTab = tab.dataset.tab;
+    document.querySelectorAll(".history-tab").forEach(t =>
+      t.classList.toggle("active", t === tab)
+    );
+    renderHistory();
+  });
+});
 
 input.addEventListener("change", () => {
   const urlText = input.value.trim();
@@ -215,11 +245,11 @@ input.addEventListener("focus", () => {
 });
 
 function hiddenHistory() {
-  historyList.classList.add("hidden");
+  historyPanel.classList.add("hidden");
 }
 
 document.addEventListener("click", (e) => {
-  if (!input.contains(e.target) && !historyList.contains(e.target)) {
-    historyList.classList.add("hidden");
+  if (!input.contains(e.target) && !historyPanel.contains(e.target)) {
+    historyPanel.classList.add("hidden");
   }
 });

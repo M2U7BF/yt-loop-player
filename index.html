@@ -17,7 +17,13 @@
   <div id="controls">
     <div class="input-wrapper">
       <input style="width: 100%;" type="text" id="youtubeUrl" class="input_1" placeholder="YouTube動画のURLを入力" autocomplete="off">
-      <ul id="historyList" class="hidden"></ul>
+      <div id="historyPanel" class="hidden">
+        <ul id="historyList"></ul>
+        <div id="historyTabs">
+          <button type="button" class="history-tab active" data-tab="solo">solo</button>
+          <button type="button" class="history-tab" data-tab="list">list</button>
+        </div>
+      </div>
     </div>
     <button id="playButton" class="btn_10">再生</button>
     <button id="pauseButton" class="btn_10 hidden"><span class="material-symbols-outlined">pause</span></button>
