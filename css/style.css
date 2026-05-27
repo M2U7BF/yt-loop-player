@@ -109,15 +109,42 @@ button.btn_10:hover {
 }
 
 #historyList li {
+  position: relative;
+  overflow: hidden;
+  background: #d93025;
+}
+
+#historyList li .history-item-bg {
+  position: absolute;
+  top: 0;
+  right: 12px;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  color: white;
+  pointer-events: none;
+}
+
+#historyList li .history-item-content {
+  position: relative;
+  background: #212121;
   padding: 8px;
   cursor: pointer;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  user-select: none;
+  touch-action: pan-y;
+  will-change: transform;
 }
 
-#historyList li:hover {
+#historyList li .history-item-content:hover {
   background: #606060;
+}
+
+#historyList li.removing {
+  transition: height 0.2s ease, opacity 0.2s ease;
+  opacity: 0;
 }
 
 .hidden {
