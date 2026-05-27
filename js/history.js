@@ -63,7 +63,7 @@ async function addHistory(url) {
     const firstVideoUrl = getFirstVideoUrlFromPlaylist(url);
     if (firstVideoUrl) {
       const videoTitle = await fetchYoutubeTitle(firstVideoUrl);
-      title = videoTitle ? `[list] ${videoTitle}` : "[list] （タイトル取得失敗）";
+      title = videoTitle ? `${videoTitle}` : "（タイトル取得失敗）";
     } else {
       title = `[list] (ID: ${playlistId.substring(0, 10)}...)`;
     }
