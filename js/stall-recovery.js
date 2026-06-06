@@ -3,7 +3,8 @@
 (function () {
   // ===== 定数 =====
   var TICK_MS = 1000;                  // 監視間隔
-  var STALL_TIMEOUT_MS = 20000;        // この時間進捗がなければ停滞と判定（広告誤検知対策で20秒）
+  var STALL_TIMEOUT_MS = 3000;         // この時間進捗がなければ停滞と判定
+  var NETWORK_PROBE_TIMEOUT_MS = 2500; // ネットワーク疎通確認のタイムアウト
   var HEALTHY_RESET_MS = 30000;        // この時間正常再生が続いたらレベルをリセット
   var PROGRESS_EPSILON = 0.05;         // 再生位置の変化とみなす最小秒数
   var SKIP_AHEAD_SEC = 10;             // レベル0で先にスキップする秒数
@@ -20,6 +21,7 @@
   var lastActionAt = 0;            // 最後に復旧アクションを実行した時刻
   var recoveryLevel = 0;           // 0:先にシーク / 1:動画再ロード / 2:ページ再読み込み
   var healthySince = null;         // 正常再生が続いている開始時刻
+  var probing = false;             // ネットワーク疎通確認中フラグ
   var pendingRestore = loadPendingRestore(); // リロード後の復元情報
 
   // リロード前に保存した復元情報を読み出す（読み出したら即削除）
@@ -82,6 +84,16 @@
     // main.jsがdecodeURIComponentで二重デコードするため、二重エンコードしておく
     params.set('url', encodeURIComponent(url));
     return window.location.pathname + '?' + params.toString();
+  }
+
+  // 停滞の原因がネットワークかどうかをYouTubeへの疎通で確認する
+  // 疎通あり = プレイヤー側の問題 → 復旧アクション / 疎通なし = ネットワークが原因 → 待機
+  function probeNetwork(callback) {
+    var controller = new AbortController();
+    var timer = setTimeout(function () { controller.abort(); }, NETWORK_PROBE_TIMEOUT_MS);
+    fetch('https://www.youtube.com/favicon.ico', { mode: 'no-cors', cache: 'no-store', signal: controller.signal })
+      .then(function () { clearTimeout(timer); callback(true); })
+      .catch(function () { clearTimeout(timer); callback(false); });
   }
 
   function reportStall(level) {
@@ -211,10 +223,23 @@
       healthySince = null;
     }
 
-    // 停滞判定 → 段階的復旧（オフライン中は回線復帰を待つ）
-    if (now - lastProgressAt >= STALL_TIMEOUT_MS && now - lastActionAt >= STALL_TIMEOUT_MS) {
-      if (navigator.onLine === false) return;
-      doRecovery(now, hasTime ? t : 0);
+    // 停滞判定 → ネットワークが原因なら待機、プレイヤー側の問題なら段階的復旧
+    if (now - lastProgressAt >= STALL_TIMEOUT_MS && now - lastActionAt >= STALL_TIMEOUT_MS && !probing) {
+      if (navigator.onLine === false) return; // 明らかにオフライン → 回線復帰を待つ
+      probing = true;
+      var stalledTime = hasTime ? t : 0;
+      probeNetwork(function (ok) {
+        probing = false;
+        if (!ok) {
+          // ネットワークが原因 → 復旧アクションはせず、そのまま回線回復を待つ
+          console.log('[stall-recovery] ネットワーク疎通なし: 回線回復を待機');
+          lastActionAt = Date.now(); // 次の疎通確認まで間隔を空ける
+          return;
+        }
+        // 疎通確認中に再生が進んでいたら何もしない
+        if (Date.now() - lastProgressAt < STALL_TIMEOUT_MS) return;
+        doRecovery(Date.now(), stalledTime);
+      });
     }
   }
 
