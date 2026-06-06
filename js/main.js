@@ -7,6 +7,8 @@ firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 var player;
 var enablePause = false;
 var isPlaylist = false; // プレイリストかどうかのフラグ
+var currentVideoId = null;
+var currentPlaylistId = null;
 
 function inputUrlFromQuery() {
   var urlParams = new URLSearchParams(window.location.search);
@@ -102,27 +104,40 @@ function updateButtonDisplay(isPlaying) {
 
 document.getElementById('playButton').addEventListener('click', function () {
   var url = document.getElementById('youtubeUrl').value;
-  
+
   if (player && player.getPlayerState() == YT.PlayerState.PAUSED) {
     player.playVideo();
     return;
   }
-  
+
   var playlistId = extractPlaylistId(url);
   var videoId = extractVideoId(url);
-  
+
   if (playlistId) {
     // プレイリストURLの場合
     isPlaylist = true;
-    player.loadPlaylist({
-      list: playlistId,
-      listType: 'playlist'
-    });
+    if (playlistId === currentPlaylistId) {
+      player.playVideoAt(0);
+    } else {
+      player.loadPlaylist({
+        list: playlistId,
+        listType: 'playlist'
+      });
+      currentPlaylistId = playlistId;
+      currentVideoId = null;
+    }
     player.unMute();
   } else if (videoId) {
     // 単一動画の場合
     isPlaylist = false;
-    player.loadVideoById(videoId);
+    if (videoId === currentVideoId) {
+      player.seekTo(0);
+      player.playVideo();
+    } else {
+      player.loadVideoById(videoId);
+      currentVideoId = videoId;
+      currentPlaylistId = null;
+    }
     player.unMute();
   } else {
     alert("有効なYouTubeのURLを入力してください。");
@@ -131,7 +146,8 @@ document.getElementById('playButton').addEventListener('click', function () {
 
 document.getElementById('stopButton').addEventListener('click', function () {
   if (player) {
-    player.stopVideo();
+    player.pauseVideo();
+    player.seekTo(0);
   }
   updateButtonDisplay(false);
 });
