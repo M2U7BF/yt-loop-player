@@ -72,6 +72,12 @@ button.btn_10:hover {
   color: #fff;
 }
 
+button.btn_10.active {
+  background-color: #3d7aff;
+  border-color: #3d7aff;
+  color: #fff;
+}
+
 /* 履歴リストとinput欄のスタイル */
 .input-wrapper {
   position: relative;
