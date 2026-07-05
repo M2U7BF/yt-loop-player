@@ -1,8 +1,6 @@
 // Googleアカウントでログインし、入力履歴をGoogle Driveのアプリ専用領域(appDataFolder)に同期する。
-// 事前準備: Google Cloud ConsoleでOAuthクライアントID(ウェブアプリケーション)を発行し、
-// 下記 GOOGLE_CLIENT_ID を書き換えてください。手順はREADME.mdを参照。
 (function () {
-  var GOOGLE_CLIENT_ID = 'YOUR_CLIENT_ID.apps.googleusercontent.com';
+  var GOOGLE_CLIENT_ID = '611114130619-45p9qds3g7hht8e36nchabmnv4lhupff.apps.googleusercontent.com';
   var SCOPE = 'https://www.googleapis.com/auth/drive.appdata';
   var DRIVE_FILE_NAME = 'yt-loop-history.json';
   var TOKEN_STORAGE_KEY = 'ytDriveToken';
