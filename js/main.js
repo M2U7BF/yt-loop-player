@@ -10,6 +10,9 @@ var isPlaylist = false; // プレイリストかどうかのフラグ
 var currentVideoId = null;
 var currentPlaylistId = null;
 
+var SHUFFLE_STORAGE_KEY = 'ytShuffleEnabled';
+var shuffleEnabled = localStorage.getItem(SHUFFLE_STORAGE_KEY) === 'true';
+
 function inputUrlFromQuery() {
   var urlParams = new URLSearchParams(window.location.search);
   var urlFromParam = urlParams.get('url');
@@ -102,6 +105,28 @@ function updateButtonDisplay(isPlaying) {
   }
 }
 
+function updateShuffleButtonDisplay() {
+  var shuffleButton = document.getElementById('shuffleButton');
+  shuffleButton.classList.toggle('active', shuffleEnabled);
+}
+
+document.getElementById('shuffleButton').addEventListener('click', function () {
+  shuffleEnabled = !shuffleEnabled;
+  localStorage.setItem(SHUFFLE_STORAGE_KEY, shuffleEnabled);
+  updateShuffleButtonDisplay();
+
+  if (isPlaylist && currentPlaylistId) {
+    // 再生中のプレイリストに即座に反映するため先頭から読み込み直す
+    player.loadPlaylist({
+      list: currentPlaylistId,
+      listType: 'playlist'
+    });
+    player.setShuffle(shuffleEnabled);
+  }
+});
+
+updateShuffleButtonDisplay();
+
 document.getElementById('playButton').addEventListener('click', function () {
   var url = document.getElementById('youtubeUrl').value;
 
@@ -123,6 +148,7 @@ document.getElementById('playButton').addEventListener('click', function () {
         list: playlistId,
         listType: 'playlist'
       });
+      player.setShuffle(shuffleEnabled);
       currentPlaylistId = playlistId;
       currentVideoId = null;
     }
