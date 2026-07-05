@@ -17,6 +17,9 @@ function loadHistory() {
 
 function saveHistory(history) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
+  if (window.driveSync && window.driveSync.isLoggedIn()) {
+    window.driveSync.push(history);
+  }
 }
 
 async function fetchYoutubeTitle(url) {
@@ -72,7 +75,7 @@ async function addHistory(url) {
     title = await fetchYoutubeTitle(url) || "（タイトル取得失敗）";
   }
 
-  history.unshift({ url, title });
+  history.unshift({ url, title, updatedAt: Date.now() });
   history = history.slice(0, MAX_HISTORY);
 
   saveHistory(history);
