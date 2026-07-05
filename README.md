@@ -29,6 +29,7 @@ https://m2u7bf.github.io/yt-loop-player/index.html
 * バックグラウンド再生
 * 入力履歴の保持（最大20件）
   * 新しい履歴ほど上に表示されます。
+* Googleアカウントでの入力履歴のクラウド同期
 
 ## 開発経緯
 * 作業BGM用にYouTubeの動画を無限再生するツールがほしかった。

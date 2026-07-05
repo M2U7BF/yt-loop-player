@@ -160,6 +160,30 @@ button.btn_10:hover {
   text-align: center;
 }
 
+#syncBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 6px 8px;
+  border-bottom: 1px solid #303030;
+  background: #1a1a1a;
+  font-size: 12px;
+  color: #aaa;
+}
+#syncBar #authButton {
+  background: transparent;
+  border: 1px solid #303030;
+  border-radius: 4px;
+  color: #fff;
+  cursor: pointer;
+  font-size: 12px;
+  padding: 3px 8px;
+}
+#syncBar #authButton:hover {
+  background: #303030;
+}
+
 #historyTabs {
   display: flex;
   gap: 4px;

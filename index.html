@@ -11,6 +11,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="theme-color" content="#000000">
   <script src="js/analytics.js"></script>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 
 <body>
@@ -18,6 +19,10 @@
     <div class="input-wrapper">
       <input style="width: 100%;" type="text" id="youtubeUrl" class="input_1" placeholder="YouTube動画のURLを入力" autocomplete="off">
       <div id="historyPanel" class="hidden">
+        <div id="syncBar">
+          <span id="syncStatus">未ログイン</span>
+          <button type="button" id="authButton">Googleでログイン</button>
+        </div>
         <ul id="historyList"></ul>
         <div id="historyTabs">
           <button type="button" class="history-tab active" data-tab="solo">solo</button>
@@ -34,6 +39,7 @@
 
    <script src="js/main.js"></script>
    <script src="js/history.js"></script>
+   <script src="js/drive-sync.js"></script>
    <script src="js/stall-recovery.js"></script>
 </body>
 
