@@ -40,3 +40,4 @@ https://m2u7bf.github.io/yt-loop-player/index.html
 
 ## 振り返り
 * モバイルでのシームレスなバックグラウンド再生は非常に難しい。
+
