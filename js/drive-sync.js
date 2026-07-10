@@ -4,11 +4,7 @@
   var SCOPE = 'https://www.googleapis.com/auth/drive.appdata';
   var DRIVE_FILE_NAME = 'yt-loop-history.json';
   var TOKEN_STORAGE_KEY = 'ytDriveToken';
-  var AUTO_LOGIN_STORAGE_KEY = 'ytDriveAutoLogin';
   var PUSH_DEBOUNCE_MS = 1500;
-  var REFRESH_MARGIN_MS = 60 * 1000; // 有効期限切れの60秒前に自動更新する
-  var GIS_WAIT_INTERVAL_MS = 250;
-  var GIS_WAIT_MAX_RETRIES = 20;
 
   var authButton = document.getElementById('authButton');
   var syncStatus = document.getElementById('syncStatus');
@@ -19,7 +15,6 @@
   var cachedFileId = null;
   var pushTimer = null;
   var pendingHistory = null;
-  var refreshTimer = null;
 
   function isConfigured() {
     return GOOGLE_CLIENT_ID.indexOf('YOUR_CLIENT_ID') === -1;
@@ -43,8 +38,6 @@
     try {
       sessionStorage.setItem(TOKEN_STORAGE_KEY, JSON.stringify({ accessToken: accessToken, expiresAt: tokenExpiresAt }));
     } catch (e) { /* 無視 */ }
-    markConsented();
-    scheduleRefresh();
   }
 
   function clearToken() {
@@ -52,37 +45,10 @@
     tokenExpiresAt = 0;
     cachedFileId = null;
     try { sessionStorage.removeItem(TOKEN_STORAGE_KEY); } catch (e) { /* 無視 */ }
-    if (refreshTimer) {
-      clearTimeout(refreshTimer);
-      refreshTimer = null;
-    }
   }
 
   function isLoggedIn() {
     return !!accessToken && tokenExpiresAt > Date.now();
-  }
-
-  // 一度ログインに成功したことをlocalStorageに記録する（ブラウザを閉じても消えない）。
-  // 次回訪問時、この記録があればGoogle側のセッションを使ったサイレント再ログインを試みる。
-  function hasConsentedBefore() {
-    try { return localStorage.getItem(AUTO_LOGIN_STORAGE_KEY) === 'true'; } catch (e) { return false; }
-  }
-
-  function markConsented() {
-    try { localStorage.setItem(AUTO_LOGIN_STORAGE_KEY, 'true'); } catch (e) { /* 無視 */ }
-  }
-
-  function clearConsent() {
-    try { localStorage.removeItem(AUTO_LOGIN_STORAGE_KEY); } catch (e) { /* 無視 */ }
-  }
-
-  // アクセストークンの有効期限が切れる前に、ユーザー操作なしで更新を試みる。
-  function scheduleRefresh() {
-    if (refreshTimer) clearTimeout(refreshTimer);
-    var delay = Math.max(0, tokenExpiresAt - Date.now() - REFRESH_MARGIN_MS);
-    refreshTimer = setTimeout(function () {
-      requestToken(true);
-    }, delay);
   }
 
   function updateUi() {
@@ -205,22 +171,15 @@
     }, PUSH_DEBOUNCE_MS);
   }
 
-  // silent=trueの場合、ポップアップやアカウント選択UIを出さずに、
-  // ブラウザに残っているGoogleのログインセッションを使ってトークン取得のみを試みる。
-  // ユーザーがGoogleに未ログイン、もしくは同意が無効化されている場合は何も起きず失敗する。
-  function requestToken(silent) {
+  function login() {
     if (!isConfigured()) {
-      if (!silent) {
-        alert('Google連携が未設定です。README記載のセットアップ手順を確認してください。');
-        console.warn('[drive-sync] GOOGLE_CLIENT_IDが未設定のためログインできません。');
-      }
+      alert('Google連携が未設定です。README記載のセットアップ手順を確認してください。');
+      console.warn('[drive-sync] GOOGLE_CLIENT_IDが未設定のためログインできません。');
       return;
     }
     if (typeof google === 'undefined' || !google.accounts || !google.accounts.oauth2) {
-      if (!silent) {
-        alert('Googleログインの読み込みに失敗しました。しばらくしてから再度お試しください。');
-        console.warn('[drive-sync] Google Identity Servicesがまだ読み込まれていません。');
-      }
+      alert('Googleログインの読み込みに失敗しました。しばらくしてから再度お試しください。');
+      console.warn('[drive-sync] Google Identity Servicesがまだ読み込まれていません。');
       return;
     }
     if (!tokenClient) {
@@ -238,29 +197,7 @@
         }
       });
     }
-    tokenClient.requestAccessToken(silent ? { prompt: '' } : {});
-  }
-
-  function login() {
-    requestToken(false);
-  }
-
-  // 過去にログイン済みの記録があれば、ページ表示時に自動でサイレントログインを試みる。
-  function trySilentLogin() {
-    if (isLoggedIn() || !hasConsentedBefore()) return;
-    requestToken(true);
-  }
-
-  // GIS(Google Identity Services)はasync/deferで読み込まれるため、
-  // 読み込み完了を待ってからサイレントログインを試みる。
-  function waitForGisAndTrySilentLogin(retriesLeft) {
-    if (typeof retriesLeft === 'undefined') retriesLeft = GIS_WAIT_MAX_RETRIES;
-    if (typeof google !== 'undefined' && google.accounts && google.accounts.oauth2) {
-      trySilentLogin();
-      return;
-    }
-    if (retriesLeft <= 0) return;
-    setTimeout(function () { waitForGisAndTrySilentLogin(retriesLeft - 1); }, GIS_WAIT_INTERVAL_MS);
+    tokenClient.requestAccessToken();
   }
 
   function logout() {
@@ -268,7 +205,6 @@
       google.accounts.oauth2.revoke(accessToken, function () { /* no-op */ });
     }
     clearToken();
-    clearConsent();
     updateUi();
   }
 
@@ -286,10 +222,7 @@
   loadStoredToken();
   updateUi();
   if (isLoggedIn()) {
-    scheduleRefresh();
     pullAndMerge();
-  } else {
-    waitForGisAndTrySilentLogin();
   }
 
   window.driveSync = {
