@@ -1,7 +1,7 @@
 // Googleアカウントでログインし、入力履歴をGoogle Driveのアプリ専用領域(appDataFolder)に同期する。
 (function () {
   var GOOGLE_CLIENT_ID = '611114130619-45p9qds3g7hht8e36nchabmnv4lhupff.apps.googleusercontent.com';
-  var SCOPE = 'https://www.googleapis.com/auth/drive.appdata';
+  var SCOPE = 'https://www.googleapis.com/auth/drive.appdata https://www.googleapis.com/auth/youtube.readonly';
   var DRIVE_FILE_NAME = 'yt-loop-history.json';
   var TOKEN_STORAGE_KEY = 'ytDriveToken';
   var PUSH_DEBOUNCE_MS = 1500;
@@ -229,6 +229,7 @@
     login: login,
     logout: logout,
     push: push,
-    isLoggedIn: isLoggedIn
+    isLoggedIn: isLoggedIn,
+    getAccessToken: function () { return isLoggedIn() ? accessToken : null; }
   };
 })();
