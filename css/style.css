@@ -160,28 +160,115 @@ button.btn_10:hover {
   text-align: center;
 }
 
-#syncBar {
+/* 設定・プレイリストインポート共通のモーダル */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+}
+.modal-dialog {
+  position: relative;
+  width: min(90vw, 420px);
+  max-height: 70vh;
+  background: #212121;
+  border: 1px solid #303030;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border-bottom: 1px solid #303030;
+  color: #fff;
+  font-size: 14px;
+}
+.modal-close {
+  background: transparent;
+  border: none;
+  color: #aaa;
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+}
+.modal-close:hover {
+  color: #fff;
+}
+
+/* 設定パネル */
+#settingsButton .material-symbols-outlined {
+  color: #e3e3e3;
+  vertical-align: middle;
+}
+#settingsBody {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+#settingsBody #syncBar {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  padding: 6px 8px;
-  border-bottom: 1px solid #303030;
-  background: #1a1a1a;
-  font-size: 12px;
+  font-size: 13px;
   color: #aaa;
 }
-#syncBar #authButton {
+#settingsBody #authButton,
+#settingsBody .settings-action {
   background: transparent;
   border: 1px solid #303030;
   border-radius: 4px;
   color: #fff;
   cursor: pointer;
-  font-size: 12px;
-  padding: 3px 8px;
+  font-size: 13px;
+  padding: 6px 10px;
 }
-#syncBar #authButton:hover {
+#settingsBody #authButton:hover,
+#settingsBody .settings-action:hover {
   background: #303030;
+}
+#settingsBody .settings-action {
+  width: 100%;
+  text-align: left;
+}
+
+/* プレイリストインポート用モーダル */
+#playlistImportStatus {
+  padding: 8px 12px;
+  color: #aaa;
+  font-size: 12px;
+}
+#playlistImportList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+}
+#playlistImportList li.playlist-import-item {
+  padding: 10px 12px;
+  color: #fff;
+  cursor: pointer;
+  border-top: 1px solid #303030;
+}
+#playlistImportList li.playlist-import-item:hover {
+  background: #303030;
+}
+#playlistImportList li.playlist-import-empty {
+  padding: 10px 12px;
+  color: #888;
+  text-align: center;
 }
 
 #historyTabs {
