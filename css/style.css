@@ -207,9 +207,15 @@ button.btn_10:hover {
 }
 
 /* 設定パネル */
-#settingsButton .material-symbols-outlined {
+#settingsButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+}
+#settingsButton .settings-icon {
   color: #e3e3e3;
-  vertical-align: middle;
+  display: block;
 }
 #settingsBody {
   padding: 12px;
