@@ -206,17 +206,20 @@ button.btn_10:hover {
   color: #fff;
 }
 
-/* 設定パネル */
-#settingsButton {
+/* アイコンのみのボタン（設定・一時停止・停止）を上下左右中央揃えにする */
+button.icon-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 6px;
+  width: 42px;
+  padding: 0;
 }
-#settingsButton .settings-icon {
-  color: #e3e3e3;
+.icon-btn svg {
   display: block;
+  color: #e3e3e3;
 }
+
+/* 設定パネル */
 #settingsBody {
   padding: 12px;
   display: flex;
