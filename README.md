@@ -14,21 +14,28 @@ https://m2u7bf.github.io/yt-loop-player/index.html
 
 ２）URLの入力<br>
 <img src="https://github.com/M2U7BF/yt-loop-player/blob/main/readme/Screenshot%20from%202025-11-11%2014-50-02.png" width="500px">
+* 動画URLだけでなく、プレイリストのURLも入力できます。
+* 入力欄をクリックすると、過去に入力したURLの履歴が表示されます。
+  * 履歴パネルの`solo`/`list`タブで、単体動画とプレイリストの履歴を切り替えて表示できます。
 
 ３）再生ボタンを押す<br>
 <img src="https://github.com/M2U7BF/yt-loop-player/blob/main/readme/Screenshot%20from%202025-11-11%2014-50-39.png" width="500px">
+* 一時停止ボタンは`pause=true`のクエリパラメータを付けてアクセスしたときのみ表示されます。
 
 ## 注意点
 * 動画の停止は停止ボタンから行ってください。簡易的にバックグラウンド再生に対応した関係でiframeのクリックでは停止できません。
 
 ## 機能
-* YouTube動画の無限再生
+* YouTube動画・プレイリストの無限再生
 * URLクエリパラメータを使用可能
   * `url`というパラメータに任意のYouTube URLを入れてアクセスすると、jsでそれを読み込み、URL入力欄に自動入力します。
+  * `pause`というパラメータを`true`にすると、一時停止ボタンを表示できます。
 * PC、モバイルの双方で利用可能
 * バックグラウンド再生
+* バッファリング停滞時の自動復旧
 * 入力履歴の保持（最大20件）
   * 新しい履歴ほど上に表示されます。
+  * 単体動画とプレイリストで履歴タブが分かれています。
 * Googleアカウントでの入力履歴のクラウド同期
 * Googleアカウントの自分のYouTubeプレイリストから履歴へのURLインポート
 
