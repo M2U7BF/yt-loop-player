@@ -292,6 +292,55 @@ button.icon-btn {
   text-align: center;
 }
 
+/* YouTube検索モーダル */
+#searchBody {
+  padding: 12px;
+}
+#searchBody #searchInput {
+  width: 100%;
+  box-sizing: border-box;
+}
+#searchStatus {
+  padding: 0 12px 8px;
+  color: var(--color-text-muted);
+  font-size: 12px;
+}
+#searchResultList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+}
+#searchResultList li.search-result-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  color: var(--color-text);
+  cursor: pointer;
+  border-top: 1px solid var(--color-border);
+}
+#searchResultList li.search-result-item:hover {
+  background: var(--color-border);
+}
+#searchResultList li.search-result-item .search-result-thumb {
+  width: 60px;
+  height: 45px;
+  object-fit: cover;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+#searchResultList li.search-result-item .search-result-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+#searchResultList li.search-result-empty {
+  padding: 10px 12px;
+  color: var(--color-text-faint);
+  text-align: center;
+}
+
 #historyTabs {
   display: flex;
   gap: 4px;
