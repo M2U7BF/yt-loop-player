@@ -1,47 +1,58 @@
+:root {
+  --color-bg: #000;
+  --color-surface: #212121;
+  --color-surface-alt: #1a1a1a;
+  --color-border: #303030;
+  --color-btn-bg: #222;
+  --color-hover-bg: #606060;
+  --color-active-bg: #4d4d4d;
+  --color-text: #fff;
+  --color-text-muted: #aaa;
+  --color-text-faint: #888;
+  --color-icon: #e3e3e3;
+  --color-scrollbar-thumb: #929292;
+  --color-danger: #d93025;
+  --overlay-backdrop: rgba(0, 0, 0, 0.6);
+  --shadow-btn: rgba(0, 0, 0, 0.07) 0px 2px 4px 0px, rgba(0, 0, 0, 0.05) 0px 1px 1.5px 0px;
+}
+
 body,
 html {
   margin: 0;
   padding: 0;
   height: 100%;
   font-family: sans-serif;
-  background-color: black;
+  background-color: var(--color-bg);
   display: flex;
   flex-direction: column;
 }
 
 #controls {
   padding: 15px;
-  background-color: black;
+  background-color: var(--color-bg);
   display: flex;
 }
 
 #youtubeUrl {
+  width: 100%;
   flex-grow: 1;
   font-size: 16px;
   padding: 8px;
   margin-right: 10px;
 }
 
-#playButton {
-  cursor: pointer;
-}
-
-#stopButton {
-  cursor: pointer;
-}
-
 #player {
   flex-grow: 1;
-  background-color: #000;
+  background-color: var(--color-bg);
 }
 
 input.input_1 {
-  background-color: #212121;
-  border: 2px solid #303030;
+  background-color: var(--color-surface);
+  border: 2px solid var(--color-border);
   border-radius: 6px;
   height: 42px;
   line-height: normal;
-  color: white;
+  color: var(--color-text);
   display: block;
   box-sizing: border-box;
   user-select: auto;
@@ -52,14 +63,14 @@ input.input_1 {
 
 button.btn_10 {
   display: inline-block;
-  background-color: #222222;
+  background-color: var(--color-btn-bg);
   outline: 0;
   cursor: pointer;
   border-radius: 6px;
-  border: 2px solid #303030;
-  color: white;
+  border: 2px solid var(--color-border);
+  color: var(--color-text);
   padding: 6px 12px;
-  box-shadow: rgba(0, 0, 0, 0.07) 0px 2px 4px 0px, rgba(0, 0, 0, 0.05) 0px 1px 1.5px 0px;
+  box-shadow: var(--shadow-btn);
   font-size: 16px;
   height: 42px;
   margin-left: 5px;
@@ -68,8 +79,8 @@ button.btn_10 {
 }
 
 button.btn_10:hover {
-  background-color: #606060;
-  color: #fff;
+  background-color: var(--color-hover-bg);
+  color: var(--color-text);
 }
 
 /* 履歴リストとinput欄のスタイル */
@@ -80,23 +91,23 @@ button.btn_10:hover {
 
 /* 履歴リスト */
 #historyPanel {
-  border: 1px solid #303030;
+  border: 1px solid var(--color-border);
   border-radius: 6px;
   width: 100%;
   margin-top: 4px;
-  background: #212121;
+  background: var(--color-surface);
   position: absolute;
   top: 100%;
   z-index: 1000;
   overflow: hidden;
 }
 #historyList {
-  color: white;
+  color: var(--color-text);
   width: 100%;
   padding: 0;
   margin: 0;
   list-style: none;
-  background: #212121;
+  background: var(--color-surface);
   max-height: 200px;
   overflow-y: scroll;
 }
@@ -104,10 +115,10 @@ button.btn_10:hover {
   width: 6px;
 }
 #historyList::-webkit-scrollbar-thumb {
-  background-color: #929292;
+  background-color: var(--color-scrollbar-thumb);
   border-radius: 8px;
 }
-@media(max-width:750px) {
+@media (max-width: 750px) {
   #historyList {
     font-size: 14px;
     max-height: 180px;
@@ -117,7 +128,7 @@ button.btn_10:hover {
 #historyList li {
   position: relative;
   overflow: hidden;
-  background: #d93025;
+  background: var(--color-danger);
 }
 
 #historyList li .history-item-bg {
@@ -127,13 +138,13 @@ button.btn_10:hover {
   bottom: 0;
   display: flex;
   align-items: center;
-  color: white;
+  color: var(--color-text);
   pointer-events: none;
 }
 
 #historyList li .history-item-content {
   position: relative;
-  background: #212121;
+  background: var(--color-surface);
   padding: 8px;
   cursor: pointer;
   white-space: nowrap;
@@ -145,7 +156,7 @@ button.btn_10:hover {
 }
 
 #historyList li .history-item-content:hover {
-  background: #606060;
+  background: var(--color-hover-bg);
 }
 
 #historyList li.removing {
@@ -154,8 +165,8 @@ button.btn_10:hover {
 }
 
 #historyList li.history-empty {
-  background: #212121;
-  color: #888;
+  background: var(--color-surface);
+  color: var(--color-text-faint);
   padding: 8px;
   text-align: center;
 }
@@ -172,14 +183,14 @@ button.btn_10:hover {
 .modal-backdrop {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.6);
+  background: var(--overlay-backdrop);
 }
 .modal-dialog {
   position: relative;
   width: min(90vw, 420px);
   max-height: 70vh;
-  background: #212121;
-  border: 1px solid #303030;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
   border-radius: 6px;
   display: flex;
   flex-direction: column;
@@ -190,20 +201,20 @@ button.btn_10:hover {
   align-items: center;
   justify-content: space-between;
   padding: 10px 12px;
-  border-bottom: 1px solid #303030;
-  color: #fff;
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text);
   font-size: 14px;
 }
 .modal-close {
   background: transparent;
   border: none;
-  color: #aaa;
+  color: var(--color-text-muted);
   cursor: pointer;
   font-size: 18px;
   line-height: 1;
 }
 .modal-close:hover {
-  color: #fff;
+  color: var(--color-text);
 }
 
 /* アイコンのみのボタン（設定・一時停止・停止）を上下左右中央揃えにする */
@@ -216,7 +227,7 @@ button.icon-btn {
 }
 .icon-btn svg {
   display: block;
-  color: #e3e3e3;
+  color: var(--color-icon);
 }
 
 /* 設定パネル */
@@ -232,21 +243,21 @@ button.icon-btn {
   justify-content: space-between;
   gap: 8px;
   font-size: 13px;
-  color: #aaa;
+  color: var(--color-text-muted);
 }
 #settingsBody #authButton,
 #settingsBody .settings-action {
   background: transparent;
-  border: 1px solid #303030;
+  border: 1px solid var(--color-border);
   border-radius: 4px;
-  color: #fff;
+  color: var(--color-text);
   cursor: pointer;
   font-size: 13px;
   padding: 6px 10px;
 }
 #settingsBody #authButton:hover,
 #settingsBody .settings-action:hover {
-  background: #303030;
+  background: var(--color-border);
 }
 #settingsBody .settings-action {
   width: 100%;
@@ -256,7 +267,7 @@ button.icon-btn {
 /* プレイリストインポート用モーダル */
 #playlistImportStatus {
   padding: 8px 12px;
-  color: #aaa;
+  color: var(--color-text-muted);
   font-size: 12px;
 }
 #playlistImportList {
@@ -267,16 +278,16 @@ button.icon-btn {
 }
 #playlistImportList li.playlist-import-item {
   padding: 10px 12px;
-  color: #fff;
+  color: var(--color-text);
   cursor: pointer;
-  border-top: 1px solid #303030;
+  border-top: 1px solid var(--color-border);
 }
 #playlistImportList li.playlist-import-item:hover {
-  background: #303030;
+  background: var(--color-border);
 }
 #playlistImportList li.playlist-import-empty {
   padding: 10px 12px;
-  color: #888;
+  color: var(--color-text-faint);
   text-align: center;
 }
 
@@ -284,8 +295,8 @@ button.icon-btn {
   display: flex;
   gap: 4px;
   padding: 3px;
-  border-top: 1px solid #303030;
-  background: #1a1a1a;
+  border-top: 1px solid var(--color-border);
+  background: var(--color-surface-alt);
 }
 #historyTabs .history-tab {
   flex: 1;
@@ -293,7 +304,7 @@ button.icon-btn {
   background: transparent;
   border: none;
   border-radius: 4px;
-  color: #aaa;
+  color: var(--color-text-muted);
   cursor: pointer;
   font-size: 12px;
   font-weight: 600;
@@ -302,14 +313,14 @@ button.icon-btn {
   transition: background 0.15s ease, color 0.15s ease;
 }
 #historyTabs .history-tab:hover {
-  color: #fff;
-  background: #303030;
+  color: var(--color-text);
+  background: var(--color-border);
 }
 #historyTabs .history-tab.active {
-  color: #fff;
-  background: #4d4d4d;
+  color: var(--color-text);
+  background: var(--color-active-bg);
 }
 
 .hidden {
-  display: none!important;
+  display: none !important;
 }

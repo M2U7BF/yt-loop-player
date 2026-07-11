@@ -17,7 +17,7 @@
 <body>
   <div id="controls">
     <div class="input-wrapper">
-      <input style="width: 100%;" type="text" id="youtubeUrl" class="input_1" placeholder="YouTube動画のURLを入力" autocomplete="off">
+      <input type="text" id="youtubeUrl" class="input_1" placeholder="YouTube動画のURLを入力" autocomplete="off">
       <div id="historyPanel" class="hidden">
         <ul id="historyList"></ul>
         <div id="historyTabs">
@@ -75,12 +75,12 @@
     </div>
   </div>
 
-   <script src="js/main.js"></script>
-   <script src="js/history.js"></script>
-   <script src="js/drive-sync.js"></script>
-   <script src="js/playlist-import.js"></script>
-   <script src="js/settings-panel.js"></script>
-   <script src="js/stall-recovery.js"></script>
+  <script type="module" src="js/history-ui.js"></script>
+  <script type="module" src="js/player.js"></script>
+  <script type="module" src="js/drive-sync.js"></script>
+  <script type="module" src="js/playlist-import.js"></script>
+  <script type="module" src="js/settings-panel.js"></script>
+  <script type="module" src="js/stall-recovery.js"></script>
 </body>
 
 </html>
