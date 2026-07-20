@@ -12,6 +12,11 @@ function isPlaylistItem(item) {
   return !!extractPlaylistId(item.url);
 }
 
+function matchesQuery(item, query) {
+  if (!query) return true;
+  return item.title.toLowerCase().includes(query) || item.url.toLowerCase().includes(query);
+}
+
 export function hideHistoryPanel() {
   historyPanel.classList.add('hidden');
 }
@@ -124,8 +129,9 @@ export function renderHistory() {
     return;
   }
 
+  const query = input.value.trim().toLowerCase();
   const filtered = history.filter((item) =>
-    currentTab === 'list' ? isPlaylistItem(item) : !isPlaylistItem(item)
+    (currentTab === 'list' ? isPlaylistItem(item) : !isPlaylistItem(item)) && matchesQuery(item, query)
   );
 
   historyList.innerHTML = '';
@@ -133,7 +139,7 @@ export function renderHistory() {
   if (filtered.length === 0) {
     const empty = document.createElement('li');
     empty.className = 'history-empty';
-    empty.textContent = '履歴がありません';
+    empty.textContent = query ? '一致する履歴がありません' : '履歴がありません';
     historyList.appendChild(empty);
   }
 
@@ -175,6 +181,10 @@ input.addEventListener('change', () => {
 });
 
 input.addEventListener('focus', () => {
+  renderHistory();
+});
+
+input.addEventListener('input', () => {
   renderHistory();
 });
 
