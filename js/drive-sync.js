@@ -22,6 +22,17 @@ function isConfigured() {
   return GOOGLE_CLIENT_ID.indexOf('YOUR_CLIENT_ID') === -1;
 }
 
+let gsiLoadStarted = false;
+/** Google Identity Servicesスクリプトを初回のみ読み込む（設定パネルを開くまで初期ロードから除外し性能を改善）。 */
+export function ensureGoogleIdentityLoaded() {
+  if (gsiLoadStarted) return;
+  gsiLoadStarted = true;
+  const script = document.createElement('script');
+  script.src = 'https://accounts.google.com/gsi/client';
+  script.async = true;
+  document.head.appendChild(script);
+}
+
 function loadStoredToken() {
   try {
     const raw = sessionStorage.getItem(TOKEN_STORAGE_KEY);
