@@ -263,6 +263,9 @@ button.icon-btn {
 #settingsBody .settings-action {
   width: 100%;
   text-align: left;
+  display: inline-block;
+  text-decoration: none;
+  box-sizing: border-box;
 }
 
 /* プレイリストインポート用モーダル */

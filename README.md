@@ -39,6 +39,7 @@ https://m2u7bf.github.io/yt-loop-player/index.html
 * Googleアカウントでの入力履歴のクラウド同期
 * Googleアカウントの自分のYouTubeプレイリストから履歴へのURLインポート
 * 検索アイコンからのYouTube動画検索（要Googleログイン）
+* 設定画面からのお問い合わせ（GitHub Issueの作成画面へ移動します）
 
 ## 開発経緯
 * 作業BGM用にYouTubeの動画を無限再生するツールがほしかった。
