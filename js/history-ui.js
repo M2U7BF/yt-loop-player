@@ -124,16 +124,18 @@ export function renderHistory() {
     return;
   }
 
-  const filtered = history.filter((item) =>
-    currentTab === 'list' ? isPlaylistItem(item) : !isPlaylistItem(item)
-  );
+  const query = input.value.trim().toLowerCase();
+
+  const filtered = history
+    .filter((item) => (currentTab === 'list' ? isPlaylistItem(item) : !isPlaylistItem(item)))
+    .filter((item) => !query || item.title.toLowerCase().includes(query) || item.url.toLowerCase().includes(query));
 
   historyList.innerHTML = '';
 
   if (filtered.length === 0) {
     const empty = document.createElement('li');
     empty.className = 'history-empty';
-    empty.textContent = '履歴がありません';
+    empty.textContent = query ? '一致する履歴がありません' : '履歴がありません';
     historyList.appendChild(empty);
   }
 
@@ -175,6 +177,10 @@ input.addEventListener('change', () => {
 });
 
 input.addEventListener('focus', () => {
+  renderHistory();
+});
+
+input.addEventListener('input', () => {
   renderHistory();
 });
 
