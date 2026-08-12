@@ -1,4 +1,6 @@
 // 設定パネル（Googleログイン・プレイリストインポートの起点）の開閉を管理する。
+import { ensureGoogleIdentityLoaded } from './drive-sync.js';
+
 const settingsButton = document.getElementById('settingsButton');
 const panel = document.getElementById('settingsPanel');
 const backdrop = document.getElementById('settingsBackdrop');
@@ -6,6 +8,7 @@ const closeButton = document.getElementById('settingsClose');
 
 function open() {
   if (panel) panel.classList.remove('hidden');
+  ensureGoogleIdentityLoaded();
 }
 
 function close() {

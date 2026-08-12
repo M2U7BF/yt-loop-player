@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://m2u7bf.github.io/yt-loop-player/sitemap.xml
