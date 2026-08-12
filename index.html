@@ -3,20 +3,58 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>YouTubeリピート再生</title>
+  <title>YouTube無限リピート再生ツール｜無料で作業用BGMをループ再生</title>
+  <meta name="description" content="YouTube動画のURLを貼るだけで無限リピート再生できる無料ツール。作業用BGMや勉強用の音楽ループに最適。会員登録不要、PC・スマホどちらでも利用可能です。">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://m2u7bf.github.io/yt-loop-player/index.html">
   <link rel="stylesheet" href="css/style.css" type="text/css">
   <link rel="icon" href="icon/logo.ico">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=pause,delete,stop,shuffle" />
+  <link rel="apple-touch-icon" href="icon/logo.ico">
+  <link rel="preconnect" href="https://www.youtube.com">
+  <link rel="preconnect" href="https://www.googletagmanager.com">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="theme-color" content="#000000">
-  <script src="js/analytics.js"></script>
+
+  <!-- OGP / Twitter Card -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="YouTube無限リピート再生ツール">
+  <meta property="og:title" content="YouTube無限リピート再生ツール｜無料で作業用BGMをループ再生">
+  <meta property="og:description" content="YouTube動画のURLを貼るだけで無限リピート再生できる無料ツール。作業用BGMや勉強用の音楽ループに最適。会員登録不要、PC・スマホどちらでも利用可能です。">
+  <meta property="og:url" content="https://m2u7bf.github.io/yt-loop-player/index.html">
+  <meta property="og:image" content="https://m2u7bf.github.io/yt-loop-player/icon/og-image.png">
+  <meta property="og:locale" content="ja_JP">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="YouTube無限リピート再生ツール｜無料で作業用BGMをループ再生">
+  <meta name="twitter:description" content="YouTube動画のURLを貼るだけで無限リピート再生できる無料ツール。作業用BGMや勉強用の音楽ループに最適。">
+  <meta name="twitter:image" content="https://m2u7bf.github.io/yt-loop-player/icon/og-image.png">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "YouTube無限リピート再生ツール",
+    "url": "https://m2u7bf.github.io/yt-loop-player/index.html",
+    "description": "YouTube動画のURLを貼るだけで無限リピート再生できる無料ツール。作業用BGMや勉強用の音楽ループに最適。",
+    "applicationCategory": "MultimediaApplication",
+    "operatingSystem": "Any",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "JPY"
+    },
+    "inLanguage": "ja"
+  }
+  </script>
+
+  <script src="js/analytics.js" defer></script>
 </head>
 
 <body>
+  <h1 class="sr-only">YouTube無限リピート再生ツール（作業用BGM・無限ループ再生）</h1>
   <div id="controls">
     <div class="input-wrapper">
-      <input style="width: 100%;" type="text" id="youtubeUrl" class="input_1" placeholder="YouTube動画のURLを入力" autocomplete="off">
+      <input type="text" id="youtubeUrl" class="input_1" placeholder="YouTube動画のURLを入力" autocomplete="off">
       <div id="historyPanel" class="hidden">
         <ul id="historyList"></ul>
         <div id="historyTabs">
@@ -25,17 +63,91 @@
         </div>
       </div>
     </div>
-    <button id="shuffleButton" class="btn_10" title="プレイリストをシャッフル再生"><span class="material-symbols-outlined">shuffle</span></button>
-    <button id="playButton" class="btn_10">再生</button>
-    <button id="pauseButton" class="btn_10 hidden"><span class="material-symbols-outlined">pause</span></button>
-    <button id="stopButton" class="btn_10 hidden"><span class="material-symbols-outlined">stop</span></button>
+    <button id="searchButton" class="btn_10 icon-btn" aria-label="検索">
+      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+        <path fill="currentColor" d="M15.5,14h-0.79l-0.28,-0.27C15.41,12.59 16,11.11 16,9.5C16,5.91 13.09,3 9.5,3S3,5.91 3,9.5S5.91,16 9.5,16c1.61,0 3.09,-0.59 4.23,-1.57l0.27,0.28v0.79l5,4.99L20.49,19L15.5,14z M9.5,14C7.01,14 5,11.99 5,9.5S7.01,5 9.5,5S14,7.01 14,9.5S11.99,14 9.5,14z" />
+      </svg>
+    </button>
+    <button id="shuffleButton" class="btn_10 icon-btn" aria-label="シャッフル再生" title="プレイリストをシャッフル再生">
+      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+        <path fill="currentColor" d="M10.59,9.17L5.41,4L4,5.41l5.17,5.17L10.59,9.17z M14.5,4l2.04,2.04L4,18.59L5.41,20L17.96,7.46L20,9.5V4H14.5z M14.83,13.41l-1.41,1.41l3.13,3.13L14.5,20H20v-5.5l-2.04,2.04L14.83,13.41z" />
+      </svg>
+    </button>
+    <button id="playButton" class="btn_10 icon-btn" aria-label="再生">
+      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+        <path fill="currentColor" d="M8,5v14l11,-7z" />
+      </svg>
+    </button>
+    <button id="pauseButton" class="btn_10 icon-btn hidden" aria-label="一時停止">
+      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+        <path fill="currentColor" d="M6,19h4V5H6V19z M14,5v14h4V5H14z" />
+      </svg>
+    </button>
+    <button id="stopButton" class="btn_10 icon-btn hidden">
+      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+        <rect x="5" y="5" width="14" height="14" rx="2" ry="2" fill="currentColor" />
+      </svg>
+    </button>
+    <button id="settingsButton" class="btn_10 icon-btn" aria-label="設定">
+      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+        <path fill="currentColor" d="M19.14,12.94c0.04,-0.3 0.06,-0.61 0.06,-0.94c0,-0.32 -0.02,-0.64 -0.07,-0.94l2.03,-1.58c0.18,-0.14 0.23,-0.41 0.12,-0.61l-1.92,-3.32c-0.12,-0.22 -0.37,-0.29 -0.59,-0.22l-2.39,0.96c-0.5,-0.38 -1.03,-0.7 -1.62,-0.94L14.4,2.81c-0.04,-0.24 -0.24,-0.41 -0.48,-0.41h-3.84c-0.24,0 -0.43,0.17 -0.47,0.41L9.25,5.35C8.66,5.59 8.12,5.92 7.63,6.29L5.24,5.33c-0.22,-0.08 -0.47,0 -0.59,0.22L2.74,8.87C2.62,9.08 2.66,9.34 2.86,9.48l2.03,1.58C4.84,11.36 4.8,11.69 4.8,12s0.02,0.64 0.07,0.94l-2.03,1.58c-0.18,0.14 -0.23,0.41 -0.12,0.61l1.92,3.32c0.12,0.22 0.37,0.29 0.59,0.22l2.39,-0.96c0.5,0.38 1.03,0.7 1.62,0.94l0.36,2.54c0.05,0.24 0.24,0.41 0.48,0.41h3.84c0.24,0 0.44,-0.17 0.47,-0.41l0.36,-2.54c0.59,-0.24 1.13,-0.56 1.62,-0.94l2.39,0.96c0.22,0.08 0.47,0 0.59,-0.22l1.92,-3.32c0.12,-0.22 0.07,-0.47 -0.12,-0.61L19.14,12.94z M12,15.6c-1.98,0 -3.6,-1.62 -3.6,-3.6s1.62,-3.6 3.6,-3.6s3.6,1.62 3.6,3.6S13.98,15.6 12,15.6z" />
+      </svg>
+    </button>
   </div>
 
   <div id="player"></div>
 
-   <script src="js/main.js"></script>
-   <script src="js/history.js"></script>
-   <script src="js/stall-recovery.js"></script>
+  <div id="settingsPanel" class="hidden modal-overlay">
+    <div id="settingsBackdrop" class="modal-backdrop"></div>
+    <div id="settingsDialog" class="modal-dialog">
+      <div class="modal-header">
+        <span>設定</span>
+        <button type="button" id="settingsClose" class="modal-close">×</button>
+      </div>
+      <div id="settingsBody">
+        <div id="syncBar">
+          <span id="syncStatus">未ログイン</span>
+          <button type="button" id="authButton">Googleでログイン</button>
+        </div>
+        <button type="button" id="importPlaylistButton" class="settings-action">プレイリストをインポート</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="playlistImportPanel" class="hidden modal-overlay">
+    <div id="playlistImportBackdrop" class="modal-backdrop"></div>
+    <div id="playlistImportDialog" class="modal-dialog">
+      <div class="modal-header">
+        <span>プレイリストを選択</span>
+        <button type="button" id="playlistImportClose" class="modal-close">×</button>
+      </div>
+      <div id="playlistImportStatus"></div>
+      <ul id="playlistImportList"></ul>
+    </div>
+  </div>
+
+  <div id="searchPanel" class="hidden modal-overlay">
+    <div id="searchBackdrop" class="modal-backdrop"></div>
+    <div id="searchDialog" class="modal-dialog">
+      <div class="modal-header">
+        <span>YouTube検索</span>
+        <button type="button" id="searchClose" class="modal-close">×</button>
+      </div>
+      <div id="searchBody">
+        <input type="text" id="searchInput" class="input_1" placeholder="キーワードを入力してEnter" autocomplete="off">
+      </div>
+      <div id="searchStatus"></div>
+      <ul id="searchResultList"></ul>
+    </div>
+  </div>
+
+  <script type="module" src="js/history-ui.js"></script>
+  <script type="module" src="js/player.js"></script>
+  <script type="module" src="js/drive-sync.js"></script>
+  <script type="module" src="js/playlist-import.js"></script>
+  <script type="module" src="js/youtube-search.js"></script>
+  <script type="module" src="js/settings-panel.js"></script>
+  <script type="module" src="js/stall-recovery.js"></script>
 </body>
 
 </html>
