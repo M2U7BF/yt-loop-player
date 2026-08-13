@@ -7,6 +7,9 @@ const urlInput = document.getElementById('youtubeUrl');
 const playButton = document.getElementById('playButton');
 const pauseButton = document.getElementById('pauseButton');
 const stopButton = document.getElementById('stopButton');
+const shuffleButton = document.getElementById('shuffleButton');
+
+const SHUFFLE_STORAGE_KEY = 'ytShuffleEnabled';
 
 /** @type {YT.Player|null} */
 let player = null;
@@ -14,6 +17,7 @@ let enablePause = false;
 let isPlaylist = false;
 let currentVideoId = null;
 let currentPlaylistId = null;
+let shuffleEnabled = localStorage.getItem(SHUFFLE_STORAGE_KEY) === 'true';
 
 /** 現在生成済みのプレイヤーインスタンスを返す（stall-recoveryから参照）。 */
 export function getPlayer() {
@@ -55,6 +59,10 @@ function updateButtonDisplay(isPlaying) {
     stopButton.classList.add('hidden');
     if (enablePause) pauseButton.classList.add('hidden');
   }
+}
+
+function updateShuffleButtonDisplay() {
+  shuffleButton.classList.toggle('active', shuffleEnabled);
 }
 
 function handlePlayerReady() {
@@ -122,6 +130,7 @@ playButton.addEventListener('click', () => {
       player.playVideoAt(0);
     } else {
       player.loadPlaylist({ list: playlistId, listType: 'playlist' });
+      player.setShuffle(shuffleEnabled);
       currentPlaylistId = playlistId;
       currentVideoId = null;
     }
@@ -157,10 +166,23 @@ pauseButton.addEventListener('click', () => {
   updateButtonDisplay(false);
 });
 
+shuffleButton.addEventListener('click', () => {
+  shuffleEnabled = !shuffleEnabled;
+  localStorage.setItem(SHUFFLE_STORAGE_KEY, shuffleEnabled);
+  updateShuffleButtonDisplay();
+
+  if (isPlaylist && currentPlaylistId) {
+    // 再生中のプレイリストに即座に反映するため先頭から読み込み直す
+    player.loadPlaylist({ list: currentPlaylistId, listType: 'playlist' });
+    player.setShuffle(shuffleEnabled);
+  }
+});
+
 urlInput.addEventListener('keydown', (event) => {
   if (event.key === 'Enter') {
     playButton.click();
   }
 });
 
+updateShuffleButtonDisplay();
 loadYouTubeIframeApi();
