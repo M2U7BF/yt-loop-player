@@ -97,6 +97,7 @@ if (searchButton) {
       alert('YouTube検索にはGoogleログインが必要です。設定からログインしてください。');
       return;
     }
+    if (window.settingsPanel) window.settingsPanel.close();
     openPanel();
   });
 }

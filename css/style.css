@@ -268,7 +268,17 @@ button.icon-btn {
 }
 #settingsBody .settings-action {
   width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
   text-align: left;
+}
+#settingsBody .settings-action svg {
+  flex-shrink: 0;
+  color: var(--color-icon);
+}
+#settingsBody .settings-action.active {
+  color: #3d7aff;
 }
 
 /* プレイリストインポート用モーダル */
