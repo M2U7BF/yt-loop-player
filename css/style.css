@@ -95,6 +95,34 @@ button.btn_10.active {
   width: 100%;
 }
 
+/* 入力欄のクリア（×）ボタン */
+#youtubeUrl {
+  padding-right: 36px;
+}
+.input-clear {
+  position: absolute;
+  top: 50%;
+  right: 18px;
+  transform: translateY(-50%);
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background-color: var(--color-hover-bg);
+  color: var(--color-text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.input-clear:hover {
+  background-color: var(--color-active-bg);
+}
+.input-clear.hidden {
+  display: none;
+}
+
 /* 履歴リスト */
 #historyPanel {
   border: 1px solid var(--color-border);

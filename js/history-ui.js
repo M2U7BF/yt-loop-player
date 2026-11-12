@@ -180,6 +180,24 @@ input.addEventListener('change', () => {
   }
 });
 
+const clearButton = document.getElementById('clearInputButton');
+
+function updateClearButton() {
+  clearButton.classList.toggle('hidden', !input.value);
+}
+
+clearButton.addEventListener('click', () => {
+  input.value = '';
+  updateClearButton();
+  input.focus();
+  renderHistory();
+});
+
+input.addEventListener('input', updateClearButton);
+// 外部（クエリ・履歴選択・検索）からの値設定にも追従する
+setInterval(updateClearButton, 300);
+updateClearButton();
+
 input.addEventListener('focus', () => {
   renderHistory();
 });
