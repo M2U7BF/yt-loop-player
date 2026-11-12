@@ -17,6 +17,7 @@ let enablePause = false;
 let isPlaylist = false;
 let currentVideoId = null;
 let currentPlaylistId = null;
+let userStopped = false; // ユーザーが停止/一時停止ボタンを押した状態
 let shuffleEnabled = localStorage.getItem(SHUFFLE_STORAGE_KEY) === 'true';
 
 /** 現在生成済みのプレイヤーインスタンスを返す（stall-recoveryから参照）。 */
@@ -90,7 +91,15 @@ function handlePlayerStateChange(event) {
       player.playVideo(); // 単一動画は同じ動画をループ
     }
   } else if (!enablePause && event.data === YT.PlayerState.PAUSED) {
-    player.playVideo();
+    // 停止ボタン操作・バックグラウンド中（画面ロック等）は自動再開しない。
+    // スマホでは非表示中のplayVideo()が拒否され、状態が競合して止まる原因になる。
+    if (!userStopped && !document.hidden) {
+      setTimeout(() => {
+        if (!userStopped && !document.hidden && player.getPlayerState() === YT.PlayerState.PAUSED) {
+          player.playVideo();
+        }
+      }, 300);
+    }
   }
   hideHistoryPanel();
 }
@@ -115,6 +124,7 @@ window.onYouTubeIframeAPIReady = function onYouTubeIframeAPIReady() {
 
 playButton.addEventListener('click', () => {
   const url = urlInput.value;
+  userStopped = false;
 
   if (player && player.getPlayerState() === YT.PlayerState.PAUSED) {
     player.playVideo();
@@ -152,6 +162,7 @@ playButton.addEventListener('click', () => {
 });
 
 stopButton.addEventListener('click', () => {
+  userStopped = true;
   if (player) {
     player.pauseVideo();
     player.seekTo(0);
@@ -160,6 +171,7 @@ stopButton.addEventListener('click', () => {
 });
 
 pauseButton.addEventListener('click', () => {
+  userStopped = true;
   if (player) {
     player.pauseVideo();
   }
