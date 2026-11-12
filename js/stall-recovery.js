@@ -5,7 +5,8 @@ import { getPlayer, isPlaylistActive } from './player.js';
 
 // ===== 定数 =====
 const TICK_MS = 1000; // 監視間隔
-const STALL_TIMEOUT_MS = 3000; // この時間進捗がなければ停滞と判定
+const STALL_TIMEOUT_MS = 8000; // この時間進捗がなければ停滞と判定（スマホの再生開始直後の誤検知を避けるため長めに）
+const STARTUP_GRACE_MS = 10000; // 再生開始（候補状態への遷移）からこの間は停滞判定しない
 const NETWORK_PROBE_TIMEOUT_MS = 2500; // ネットワーク疎通確認のタイムアウト
 const HEALTHY_RESET_MS = 30000; // この時間正常再生が続いたらレベルをリセット
 const PROGRESS_EPSILON = 0.05; // 再生位置の変化とみなす最小秒数
@@ -23,6 +24,7 @@ let lastProgressAt = Date.now(); // 最後に進捗を確認した時刻
 let lastActionAt = 0; // 最後に復旧アクションを実行した時刻
 let recoveryLevel = 0; // 0:先にシーク / 1:動画再ロード / 2:ページ再読み込み
 let healthySince = null; // 正常再生が続いている開始時刻
+let candidateSince = null; // 停滞候補状態（PLAYING/BUFFERING）に入った時刻
 let probing = false; // ネットワーク疎通確認中フラグ
 let pendingRestore = loadPendingRestore(); // リロード後の復元情報
 
@@ -230,6 +232,12 @@ function tick() {
   if (!isStallCandidateState(state)) {
     lastProgressAt = now;
     healthySince = null;
+    candidateSince = null;
+    return;
+  }
+  if (candidateSince === null) candidateSince = now;
+  if (now - candidateSince < STARTUP_GRACE_MS) {
+    lastProgressAt = now; // 起動直後は猶予
     return;
   }
 

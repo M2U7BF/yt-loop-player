@@ -112,7 +112,11 @@ function attachSwipeToDelete(li, content, item) {
     }
     input.value = item.url;
     hideHistoryPanel();
-    document.getElementById('playButton').click();
+    // キーボードを先に閉じ、ビューポートのリサイズが落ち着いてから再生する。
+    // 同時に走るとiframeがリサイズ中に読み込まれ、画面が一瞬黒くなる。
+    const wasFocused = document.activeElement === input;
+    input.blur();
+    setTimeout(() => document.getElementById('playButton').click(), wasFocused ? 350 : 0);
   });
 }
 
